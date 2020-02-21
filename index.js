@@ -19,7 +19,7 @@ app.post('/', (req, res, next) => {
 });
 
 app.post('/upload', function(req, res) {
-    console.log(req.files.sampleFile); // the uploaded file object
+    console.log(req.files.sampleFile.data.toString('utf8')); // the uploaded file object
     res.send('File uploaded!');
   });
 
