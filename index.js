@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -8,6 +9,7 @@ const port = 3000;
 
 const app = express();
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 app.post('/', (req, res, next) => {
     res.statusCode = 200;
@@ -17,7 +19,8 @@ app.post('/', (req, res, next) => {
 });
 
 app.post('/upload', function(req, res) {
-    console.log(req.files.foo); // the uploaded file object
+    console.log(req.files.sampleFile); // the uploaded file object
+    res.send('File uploaded!');
   });
 
 app.use(express.static(__dirname + '/public'));
