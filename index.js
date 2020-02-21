@@ -16,6 +16,10 @@ app.post('/', (req, res, next) => {
     console.log(req.body);
 });
 
+app.post('/upload', function(req, res) {
+    console.log(req.files.foo); // the uploaded file object
+  });
+
 app.use(express.static(__dirname + '/public'));
 
 const server = http.createServer(app);
