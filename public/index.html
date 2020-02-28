@@ -19,7 +19,25 @@
         <input type="file" name="sampleFile" />
         <input type='submit' value='Upload!' />
     </form> 
+    Load method 2:
+    <input type="file" id="files" name="files[]" multiple />
     
+    <script>
+      //和Load method 2配合
+      function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        //console.log(files[0].name);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          // e.target.result should contain the text
+          console.log(e.target.result);
+        };
+        reader.readAsText(files[0]);
+      }
+    
+      document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    </script>
+
     <script>
       // Initialize the editor with a JSON schema
       var editor = new JSONEditor(document.getElementById('editor_holder'),{
@@ -68,12 +86,29 @@
         var jsonContent = JSON.stringify(editor.getValue());
         console.log(jsonContent);
         
-        $.ajax({
+        /*$.ajax({
           url: '/', 
           type: 'POST', 
           contentType: 'application/json', 
           data: jsonContent}
         );
+        */
+        var textFileAsBlob = new Blob([jsonContent], { type: 'text/plain' });
+        var downloadLink = document.createElement('a');
+        downloadLink.download = 'download from browser.json';
+        downloadLink.innerHTML = 'Download File';
+        if ('webkitURL' in window) {
+          // Chrome allows the link to be clicked without actually adding it to the DOM.
+          downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+        } else {
+          // Firefox requires the link to be added to the DOM before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.onclick = destroyClickedElement;
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
+        }
+
+        downloadLink.click();
 
         /*fs.writeFile("output.json", jsonContent, 'utf8', function (err) {
           if (err) {
@@ -83,6 +118,9 @@
         });
         */
       });
+      function destroyClickedElement(event) {
+        document.body.removeChild(event.target);
+      }
     </script>
   </body>
 </html>
